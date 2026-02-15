@@ -1,0 +1,16 @@
+{
+    "api_url": "http://localhost:50325",
+    "create_profiles": true,
+    "cleanup_on_error": false,
+    "fingerprint_settings": {
+        "random_ua": true,
+        "random_canvas": true,
+        "random_webgl": true,
+        "webrtc": "proxy",
+        "timezone": "auto",
+        "language": ["en-US", "en"],
+        "platform": "Win32"
+    },
+    "default_proxy_type": "http",
+    "profile_name_prefix": "TikTok_BC_"
+}

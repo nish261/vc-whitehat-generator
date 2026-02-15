@@ -1,0 +1,51 @@
+{
+    "hootservices": {
+        "api_url": "https://api.hootservices.com",
+        "api_key": "YOUR_HOOTSERVICES_API_KEY"
+    },
+    "vital_proxies": {
+        "api_url": "https://api.vital-proxies.com",
+        "api_key": "YOUR_VITAL_PROXIES_API_KEY",
+        "provider": "royal",
+        "ttl": 3600,
+        "format": "user:pass@ip:port"
+    },
+    "sms": {
+        "provider": "smspool",
+        "api_url": "https://api.smspool.net",
+        "api_key": "YOUR_SMSPOOL_API_KEY",
+        "tiktok_service_id": "924",
+        "poll_interval": 5,
+        "max_wait_seconds": 120
+    },
+    "tiktok": {
+        "business_center_url": "https://business.tiktok.com",
+        "ads_manager_url": "https://ads.tiktok.com/i18n/home",
+        "login_url": "https://www.tiktok.com/login"
+    },
+    "region_timezones": {
+        "US": "America/New_York",
+        "IT": "Europe/Rome",
+        "FR": "Europe/Paris",
+        "DE": "Europe/Berlin",
+        "NL": "Europe/Amsterdam",
+        "GB": "Europe/London",
+        "AU": "Australia/Sydney"
+    },
+    "delays": {
+        "min_action": 2,
+        "max_action": 4,
+        "typing_delay": 0.1,
+        "page_load": 5,
+        "between_accounts": [60, 120],
+        "verification_poll": 5
+    },
+    "retries": {
+        "max_retries": 3,
+        "retry_delay": [5, 10]
+    },
+    "screenshots": {
+        "enabled": true,
+        "folder": "./screenshots/"
+    }
+}

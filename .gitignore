@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+
+# Screenshots and images (keep folders, ignore contents)
+screenshots/*
+!screenshots/.gitkeep
+whitehat_images/*
+!whitehat_images/.gitkeep
+
+# Results and logs
+*.csv
+*.log
+processed_accounts.json
+
+# Config with secrets (template only)
+config/tiktok_bc_setup_config.json
+
+# OS
+.DS_Store
+Thumbs.db

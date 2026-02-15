@@ -1,0 +1,16 @@
+{
+    "tiktok_signup_url": "https://www.tiktok.com/signup",
+    "business_center_url": "https://business.tiktok.com/",
+    "default_country": "US",
+    "default_industry": "E-commerce",
+    "rate_limit_seconds": 45,
+    "max_retries": 0,
+    "timeout_seconds": 30,
+    "element_wait_timeout": 20,
+    "verification_timeout": 180,
+    "action_delays": {
+        "min_delay": 2,
+        "max_delay": 5,
+        "typing_delay": 0.1
+    }
+}

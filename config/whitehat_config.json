@@ -1,0 +1,60 @@
+{
+    "ads_manager_url": "https://ads.tiktok.com/i18n/home",
+    "campaign": {
+        "type": "traffic",
+        "budget_usd": 20,
+        "start_delay_days": 1,
+        "bidding_mode": "manual",
+        "objective": "traffic"
+    },
+    "placements": {
+        "tiktok_only": true,
+        "disable_pangle": true,
+        "disable_news_feed": true
+    },
+    "targeting": {
+        "use_home_country": true,
+        "default_country": "US",
+        "leave_defaults": true
+    },
+    "landing_page": {
+        "base_domain": "example.com",
+        "path_prefix": "/products/",
+        "random_slug_length": 12,
+        "use_https": true
+    },
+    "images_folder": "./whitehat_images/",
+    "ad_text": {
+        "use_random": true,
+        "templates": [
+            "Shop Now",
+            "Limited Time Offer",
+            "Best Deals",
+            "New Arrivals",
+            "Trending Now"
+        ]
+    },
+    "audio": {
+        "select_random": true,
+        "skip_if_unavailable": true
+    },
+    "delays": {
+        "min_delay": 2,
+        "max_delay": 4,
+        "typing_delay": 0.1,
+        "between_accounts": [45, 90],
+        "page_load_wait": 5
+    },
+    "retries": {
+        "max_retries": 3,
+        "retry_delay": [5, 10]
+    },
+    "screenshots": {
+        "enabled": true,
+        "on_success": true,
+        "on_failure": true,
+        "folder": "./screenshots/"
+    },
+    "element_wait_timeout": 20,
+    "verification_timeout": 60
+}
