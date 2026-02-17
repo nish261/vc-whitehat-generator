@@ -1,244 +1,165 @@
-# TikTok BC Automation Playbook
+# TikTok BC White Hat Playbook
 
-This playbook guides Hermes through automating TikTok Business Center setup.
+Exact step-by-step flow for Hermes.
 
-## Quick Start
+## Phase 1: Signup
 
-```bash
-cd /root/bcs
-source venv/bin/activate
+```
+1. Go to business.tiktok.com
+2. Click "Sign Up"
+3. Solve captcha (SadCaptcha)
+4. Enter email + password
+5. Get email verification code (poll HootServices)
+6. Enter code
+7. Select "Advertiser"
+8. Fill REQUIRED fields only:
+   - Business name: random from generator
+   - Country: from account region
+9. Phone verification if triggered:
+   - Get number from SMSPool
+   - Enter number
+   - Get code
+   - Enter code
+10. Set timezone: UTC
+11. Two-step verification popup: Click "Not Now"
 ```
 
-## Available Tools
+## Phase 2: Verification (Billing)
 
-| Module | Function | Description |
-|--------|----------|-------------|
-| lib.db | `get_next_queued_account()` | Get next account to process |
-| lib.db | `update_account(id, **kwargs)` | Update account status |
-| lib.db | `add_account(id, email, pwd, region, proxy)` | Add account to queue |
-| lib.accounts | `fetch_fresh_account()` | Get new account from HootServices |
-| lib.accounts | `get_proxy_for_region(region)` | Generate proxy |
-| lib.browser | `launch_browser(account_id, proxy, headless)` | Start Camoufox |
-| lib.actions | `click(page, selector)` | Click element |
-| lib.actions | `type_text(page, selector, text)` | Type with delays |
-| lib.actions | `fill(page, selector, text)` | Fill input fast |
-| lib.actions | `wait_for(page, selector)` | Wait for element |
-| lib.captcha | `solve_captcha(page)` | Solve any TikTok captcha |
-| lib.sms | `order_phone_number(region)` | Get phone number |
-| lib.sms | `get_sms_code(order_id)` | Get SMS code |
-
-## Account Processing Flow
-
-### Step 1: Get Account
-
-```python
-from lib.db import get_next_queued_account, update_account, add_account
-from lib.accounts import fetch_fresh_account, get_proxy_for_region
-
-# Option A: Get from queue
-account = get_next_queued_account()
-
-# Option B: Fetch fresh and add to queue
-if not account:
-    fresh = fetch_fresh_account()
-    if fresh:
-        proxy = get_proxy_for_region(fresh["region"])
-        add_account(fresh["id"], fresh["email"], fresh["password"], fresh["region"], proxy)
-        account = get_next_queued_account()
+```
+1. Go to "Accounts" section
+2. Account shows "in review"
+3. Go to "Verification" section
+4. If EU country: Enter VAT code
+   - FR: FR90451321335
+   - IT: IT00348170101
+   - Other: ASK USER
+5. Add payment method:
+   - If "automatic" option shows: use it
+   - If only "manual": proxy might be weak
+6. Enter card details from config
 ```
 
-### Step 2: Launch Browser
+## Phase 3: Assign Ad Account
 
-```python
-from lib.browser import launch_browser
-
-browser = launch_browser(
-    account_id=account["id"],
-    proxy=account["proxy"],
-    region=account["region"],
-    headless=True
-)
-
-page = browser.get_page()
-update_account(account["id"], status="in_progress", current_step="browser_launched")
+```
+1. Go to "Ads Manager"
+2. Assign ad account to Business Center
+3. Enter email code if requested (poll HootServices again)
+4. Click "Launch" or "Open"
 ```
 
-### Step 3: Navigate to TikTok Business
+## Phase 4: Create White Hat Campaign
 
-```python
-browser.goto("https://business.tiktok.com/")
-browser.screenshot("landing")
+### Campaign Level
+```
+1. Switch to "Full Version" (not simplified)
+2. Select objective: Traffic (or Reach, Video Views)
+3. Leave as "Manual"
+4. Click Continue
 ```
 
-### Step 4: Login
-
-```python
-from lib.actions import click, type_text, fill, wait_for
-from lib.captcha import solve_captcha
-
-# Click login
-click(page, "text=Log in")
-wait_for(page, "input[name=email]")
-
-# Enter credentials
-type_text(page, "input[name=email]", account["email"])
-type_text(page, "input[name=password]", account["password"])
-click(page, "button[type=submit]")
-
-# Handle captcha
-solve_captcha(page)
-
-browser.screenshot("after_login")
-update_account(account["id"], current_step="logged_in")
+### Ad Group Level
+```
+1. UNSELECT all placements except TikTok
+   - Uncheck: Pangle, News Feed Apps, etc
+   - Keep only: TikTok
+2. Targeting:
+   - Location: same as account country
+   - Age: All
+   - Gender: All
+   - Interests: None needed
+3. Budget: $20 (minimum)
+4. Schedule: +1 day ahead (so it doesnt spend)
+5. Optimization goal: doesnt matter
 ```
 
-### Step 5: Handle Email Verification (if needed)
-
-```python
-from lib.accounts import get_email_verification_code
-
-if wait_for(page, "text=verification code", timeout=5000):
-    code = get_email_verification_code(account["email"])
-    if code:
-        type_text(page, "input[placeholder*=code]", code)
-        click(page, "button[type=submit]")
+### Ad Creative Level
+```
+1. Click "Create New"
+2. Upload image from /root/bcs/creatives/images/
+3. Add audio: click any random track from TikTok library
+4. Click "Export video"
+5. Agree to terms
+6. Add text: random from templates
+7. Destination URL: 404 link (e.g. mymusclechef.com/404random)
+8. Click "Publish"
 ```
 
-### Step 6: Handle Phone Verification (if needed)
+## Phase 5: Monitor & Auto-Pause
 
-```python
-from lib.sms import order_phone_number, get_sms_code
-
-if wait_for(page, "text=phone number", timeout=5000):
-    sms = order_phone_number(account["region"])
-    type_text(page, "input[type=tel]", sms["phone_number"])
-    click(page, "text=Send code")
-    
-    code = get_sms_code(sms["order_id"])
-    if code:
-        type_text(page, "input[placeholder*=code]", code)
-        click(page, "button[type=submit]")
+```
+1. Save campaign ID to database
+2. Campaign monitor (cron every 5 min) checks status
+3. When status = APPROVED, auto-pause via TikTok API
 ```
 
-### Step 7: Create Business Center
+---
 
-```python
-if wait_for(page, "text=Create Business Center"):
-    click(page, "text=Create Business Center")
+## Key Things to Remember
 
-type_text(page, "input[name=business_name]", f"Business {account[id][:8]}")
-click(page, "text=Create")
+| Rule | Why |
+|------|-----|
+| Gmails > temp emails | Temp emails = payment failures |
+| UNSELECT other placements | Only TikTok, no Pangle |
+| Schedule +1 day | So it doesnt spend money |
+| Netherlands/EU | Performs well for getting active |
+| VAT code required for EU | Avoids tax issues |
+| Two-step: "Not Now" | Skip 2FA setup |
 
-browser.screenshot("bc_created")
-update_account(account["id"], current_step="bc_created")
+---
+
+## Selectors Reference
+
+### Signup Page
+```
+Sign Up button: text="Sign up" or text="Get started"
+Email input: input[name="email"] or input[type="email"]
+Password input: input[name="password"] or input[type="password"]
+Captcha: handled by SadCaptcha
+Verification code: input[placeholder*="code"]
 ```
 
-### Step 8: Add VAT Code
-
-```python
-import json
-with open("config/tiktok_bc_setup_config.json") as f:
-    config = json.load(f)
-
-vat_codes = config["billing"]["vat_codes"]
-region = account["region"]
-
-if region in vat_codes:
-    click(page, "text=Tax Information")
-    type_text(page, "input[name=vat]", vat_codes[region])
-    click(page, "text=Save")
+### BC Setup
+```
+Advertiser option: text="Advertiser" or text="I want to advertise"
+Country dropdown: select[name="country"] or [data-testid="country"]
+Timezone: select containing "UTC"
+Not Now button: text="Not now" or text="Skip"
 ```
 
-### Step 9: Add Payment Method
-
-```python
-card = config["billing"]["card"]
-
-click(page, "text=Payment")
-click(page, "text=Add Card")
-
-type_text(page, "input[name=card_number]", card["number"])
-type_text(page, "input[name=expiry]", card["expiry"])
-type_text(page, "input[name=cvv]", card["cvv"])
-
-click(page, "text=Save")
-browser.screenshot("payment_added")
-update_account(account["id"], current_step="payment_added")
+### Verification
+```
+Accounts menu: text="Accounts"
+Verification menu: text="Verification"
+VAT input: input[name="vat"] or input[placeholder*="VAT"]
+Add payment: text="Add payment" or text="Add card"
 ```
 
-### Step 10: Create White Hat Campaign
-
-```python
-from datetime import datetime, timedelta
-
-click(page, "text=Create Campaign")
-
-# Campaign name
-type_text(page, "input[name=campaign_name]", f"WH_{account[id][:8]}")
-
-# Start date (+7 days)
-start_date = (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d")
-fill(page, "input[name=start_date]", start_date)
-
-# Budget $10
-fill(page, "input[name=budget]", "10")
-
-# 404 URL
-fill(page, "input[name=url]", "https://example.com/404")
-
-click(page, "text=Create")
-browser.screenshot("campaign_created")
-
-# Get campaign ID
-campaign_id = page.url.split("/")[-1]
-update_account(
-    account["id"],
-    status="complete",
-    current_step="campaign_created",
-    campaign_id=campaign_id,
-    campaign_status="pending"
-)
+### Campaign Creation
+```
+Full version toggle: text="Full version" or text="Switch"
+Traffic objective: text="Traffic"
+Continue button: text="Continue"
+Placements checkboxes: [data-testid*="placement"]
+Budget input: input[name="budget"]
+Schedule input: input[type="date"]
+Create New ad: text="Create new" or text="Create"
+Upload area: [data-testid="upload"] or input[type="file"]
+Audio library: text="Music" or text="Audio"
+Text input: input[placeholder*="text"] or textarea
+URL input: input[name="url"] or input[placeholder*="URL"]
+Publish button: text="Publish" or text="Submit"
 ```
 
-### Step 11: Cleanup
+---
 
-```python
-browser.close()
-print(f"Completed account {account[id]}")
-```
+## Error Recovery
 
-## Error Handling
-
-**Captcha fails 3x:**
-```python
-update_account(account["id"], status="paused", error_log="Captcha failed 3x")
-browser.screenshot("captcha_failed")
-browser.close()
-```
-
-**Unexpected state:**
-```python
-browser.screenshot("unexpected_state")
-update_account(account["id"], status="paused", error_log="Unexpected UI")
-```
-
-## Campaign Monitor
-
-The monitor runs via cron every 5 minutes to auto-pause approved campaigns:
-```bash
-python monitor_campaigns.py
-```
-
-## After Every Run: Export CSV
-
-**IMPORTANT: After completing any account (success or failure), always export CSV:**
-
-```python
-from lib.db import export_to_csv
-
-csv_path = export_to_csv()
-print(f"CSV exported to: {csv_path}")
-# Provide this file to user as attachment
-```
-
-The CSV includes all columns: id, email, password, region, proxy, status, current_step, bc_id, campaign_id, campaign_status, error_log, attempts, created_at, updated_at
+| Error | Action |
+|-------|--------|
+| Captcha fails 3x | Mark account as paused, move to next |
+| No automatic payment | Log warning, proxy might be weak |
+| SMS timeout | Retry once, then mark failed |
+| Unexpected UI | Screenshot, try to recover, pause if stuck |
+| "Account suspended" | Mark failed, move to next |

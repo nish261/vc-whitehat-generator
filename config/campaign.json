@@ -1,0 +1,27 @@
+{
+    "budget": {
+        "ad_account_minimum": 20,
+        "campaign_deposit_minimum": 10,
+        "note": "Ad account needs $20 setup, but campaign only needs $10 to run"
+    },
+    "objective": {
+        "default": "TRAFFIC",
+        "options": ["TRAFFIC", "REACH", "VIDEO_VIEWS"]
+    },
+    "schedule": {
+        "days_ahead": 1,
+        "note": "Set 1 day ahead so it doesnt spend"
+    },
+    "bid_strategy": "LOWEST_COST",
+    "placements": {
+        "tiktok": true,
+        "pangle": false,
+        "news_feed": false
+    },
+    "targeting": {
+        "location": "same_as_account",
+        "age": "ALL",
+        "gender": "ALL"
+    },
+    "auto_pause_on_approval": true
+}

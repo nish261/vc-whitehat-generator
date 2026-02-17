@@ -1,0 +1,68 @@
+{
+    "phase_1_signup": {
+        "url": "https://business.tiktok.com",
+        "steps": [
+            "Click Sign Up",
+            "Complete captcha (SadCaptcha)",
+            "Enter email verification code (from HootServices)",
+            "Select: Advertiser",
+            "Fill REQUIRED fields only (not recommended/optional)",
+            "Select country (from account region)",
+            "Phone verification if triggered (SMSPool)",
+            "Set timezone (UTC)",
+            "Two-step verification popup: Click Not Now"
+        ]
+    },
+    "phase_2_verification": {
+        "notes": "Account shows in review - need to add billing",
+        "steps": [
+            "Go to Accounts section",
+            "Go to Verification section",
+            "Enter VAT code (if EU country)",
+            "Add billing/payment method",
+            "If automatic payment doesnt show = weak proxy or suspicious email"
+        ]
+    },
+    "phase_3_assign_ad_account": {
+        "steps": [
+            "Go to Ads Manager",
+            "Assign ad account to BC",
+            "Enter email code again if requested",
+            "Launch account"
+        ]
+    },
+    "phase_4_whitehat_campaign": {
+        "steps": [
+            "Switch to Full Version view",
+            "Select campaign type: Traffic (or Reach, Video Views)",
+            "Leave as Manual",
+            "Click Continue"
+        ],
+        "ad_group": [
+            "UNSELECT other placements (Pangle etc) - TikTok only",
+            "Targeting: leave on home country",
+            "No audience/interests needed",
+            "Budget: minimum ($20)",
+            "Schedule: +1 day ahead (so it doesnt turn on)",
+            "Optimization goal: doesnt matter"
+        ],
+        "ad_creative": [
+            "Click Create New",
+            "Search for random product image (tree shirt etc)",
+            "Take screenshot / use image from folder",
+            "Drag image in (1-2 images usually)",
+            "Add audio: click anything random from library",
+            "Export video, agree, confirm",
+            "Add random text overlay",
+            "URL: 404 link from ecom store (site.com/randomsuffix)",
+            "Hit Publish"
+        ]
+    },
+    "important_notes": {
+        "emails": "Gmails best. iCloud/Outlook/Hotmail secondary. Temp emails = payment failures",
+        "proxy": "Weak proxy or suspicious email = no automatic payment option",
+        "eu_countries": "Netherlands performs well for getting active and dealing with suspensions",
+        "budget_minimum": 20,
+        "placements": "ALWAYS unselect Pangle and other placements - TikTok only"
+    }
+}
