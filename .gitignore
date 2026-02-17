@@ -1,26 +1,24 @@
+# API keys and secrets
+config/tiktok_bc_setup_config.json
+config/tiktok_api.json
+config/adspower_config.json
+
+# Keep example config
+!config/*.example.json
+
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
+*.pyc
 venv/
-ENV/
+.env
 
-# Screenshots and images (keep folders, ignore contents)
-screenshots/*
-!screenshots/.gitkeep
-whitehat_images/*
-!whitehat_images/.gitkeep
-
-# Results and logs
-*.csv
-*.log
-processed_accounts.json
-
-# Config with secrets (template only)
-config/tiktok_bc_setup_config.json
+# Data
+accounts.db
+exports/
+screenshots/
+logs/
+config/used_names.json
+config/batch_*.json
 
 # OS
 .DS_Store
-Thumbs.db

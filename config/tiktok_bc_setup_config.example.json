@@ -23,29 +23,20 @@
         "ads_manager_url": "https://ads.tiktok.com/i18n/home",
         "login_url": "https://www.tiktok.com/login"
     },
-    "region_timezones": {
-        "US": "America/New_York",
-        "IT": "Europe/Rome",
-        "FR": "Europe/Paris",
-        "DE": "Europe/Berlin",
-        "NL": "Europe/Amsterdam",
-        "GB": "Europe/London",
-        "AU": "Australia/Sydney"
+    "billing": {
+        "vat_codes": {
+            "FR": "YOUR_FR_VAT_CODE",
+            "IT": "YOUR_IT_VAT_CODE"
+        },
+        "card": {
+            "number": "YOUR_CARD_NUMBER",
+            "expiry": "MM/YY",
+            "cvv": "123"
+        }
     },
-    "delays": {
-        "min_action": 2,
-        "max_action": 4,
-        "typing_delay": 0.1,
-        "page_load": 5,
-        "between_accounts": [60, 120],
-        "verification_poll": 5
-    },
-    "retries": {
-        "max_retries": 3,
-        "retry_delay": [5, 10]
-    },
-    "screenshots": {
-        "enabled": true,
-        "folder": "./screenshots/"
+    "captcha": {
+        "provider": "sadcaptcha",
+        "api_url": "https://www.sadcaptcha.com/api/v1",
+        "api_key": "YOUR_SADCAPTCHA_API_KEY"
     }
 }

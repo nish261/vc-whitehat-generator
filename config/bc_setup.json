@@ -1,0 +1,22 @@
+{
+    "name_generator": {
+        "prefixes": ["Digital", "Media", "Marketing", "Creative", "Global", "Prime", "Elite", "Pro", "Smart", "Next", "Apex", "Nova", "Pixel", "Fusion", "Vertex", "Summit", "Core", "Spark", "Pulse", "Wave"],
+        "suffixes": ["Solutions", "Agency", "Group", "Co", "Studio", "Labs", "Hub", "Works", "Team", "Direct", "Media", "Ads", "Marketing", "Digital", "Connect", "Reach", "Growth", "Edge", "Plus", "One"]
+    },
+    "timezone": "UTC",
+    "vat_codes": {
+        "FR": "FR90451321335",
+        "IT": "IT00348170101"
+    },
+    "vat_required_countries": ["FR", "IT", "DE", "NL", "ES", "BE", "AT", "PT", "IE", "GB"],
+    "ask_user_if_missing_vat": true,
+    "campaign": {
+        "objective": "ask_user",
+        "default_objective": "REACH",
+        "objectives": ["REACH", "TRAFFIC", "VIDEO_VIEWS", "CONVERSIONS", "APP_INSTALLS"],
+        "budget": "minimum",
+        "schedule_days_ahead": 7,
+        "auto_pause_on_approval": true,
+        "bid_strategy": "LOWEST_COST_AUTO"
+    }
+}

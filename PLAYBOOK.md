@@ -228,3 +228,17 @@ The monitor runs via cron every 5 minutes to auto-pause approved campaigns:
 ```bash
 python monitor_campaigns.py
 ```
+
+## After Every Run: Export CSV
+
+**IMPORTANT: After completing any account (success or failure), always export CSV:**
+
+```python
+from lib.db import export_to_csv
+
+csv_path = export_to_csv()
+print(f"CSV exported to: {csv_path}")
+# Provide this file to user as attachment
+```
+
+The CSV includes all columns: id, email, password, region, proxy, status, current_step, bc_id, campaign_id, campaign_status, error_log, attempts, created_at, updated_at

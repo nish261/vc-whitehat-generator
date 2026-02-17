@@ -47,7 +47,7 @@ def fetch_fresh_account():
     
     if fresh:
         account = fresh[0]
-        print(f"[ACCOUNTS] Got fresh account: {account.get(email)}")
+        print(f"[ACCOUNTS] Got fresh account: {account.get('email')}")
         return account
     
     print("[ACCOUNTS] No fresh accounts available")

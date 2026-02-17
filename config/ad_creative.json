@@ -1,0 +1,33 @@
+{
+    "video_source": {
+        "type": "folder",
+        "path": "/root/bcs/creatives/images",
+        "note": "Put images here - will be used as static ads or converted to video"
+    },
+    "music": {
+        "source": "tiktok_library",
+        "selection": "random"
+    },
+    "text_overlay": {
+        "type": "random",
+        "templates": [
+            "Check this out!",
+            "You need this",
+            "Link in bio",
+            "Must have",
+            "Trending now",
+            "Limited time",
+            "Shop now",
+            "Dont miss out",
+            "Best deal",
+            "Get yours"
+        ]
+    },
+    "cta_button": "default",
+    "identity": {
+        "type": "custom",
+        "display_name": "use_generator",
+        "profile_image": null
+    },
+    "destination_url": "https://www.mymusclechef.com/products/smashburger-beef-with-roast-potasffsfs-be056?mode=edit-cart"
+}

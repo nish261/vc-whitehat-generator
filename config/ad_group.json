@@ -1,0 +1,15 @@
+{
+    "targeting": {
+        "location": "same_as_account",
+        "age": "ALL",
+        "gender": "ALL",
+        "interests": "AUTO",
+        "languages": "AUTO"
+    },
+    "placements": {
+        "tiktok": true,
+        "pangle": false,
+        "news_feed": false
+    },
+    "name_generator": "use_bc_helpers"
+}
