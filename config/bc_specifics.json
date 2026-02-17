@@ -1,0 +1,91 @@
+{
+    "currencies": {
+        "USD": {"min_budget": 10, "symbol": "$"},
+        "EUR": {"min_budget": 10, "symbol": "€"},
+        "GBP": {"min_budget": 10, "symbol": "£"},
+        "AUD": {"min_budget": 15, "symbol": "A$"},
+        "CAD": {"min_budget": 15, "symbol": "C$"},
+        "JPY": {"min_budget": 1000, "symbol": "¥"},
+        "BRL": {"min_budget": 50, "symbol": "R$"}
+    },
+    "regions": {
+        "US": {
+            "timezone": "America/New_York",
+            "utc_offset": "-05:00",
+            "currency": "USD",
+            "vat_required": false,
+            "country_code": "US"
+        },
+        "IT": {
+            "timezone": "Europe/Rome",
+            "utc_offset": "+01:00",
+            "currency": "EUR",
+            "vat_required": true,
+            "vat_code": "IT00348170101",
+            "country_code": "IT"
+        },
+        "FR": {
+            "timezone": "Europe/Paris",
+            "utc_offset": "+01:00",
+            "currency": "EUR",
+            "vat_required": true,
+            "vat_code": "FR90451321335",
+            "country_code": "FR"
+        },
+        "DE": {
+            "timezone": "Europe/Berlin",
+            "utc_offset": "+01:00",
+            "currency": "EUR",
+            "vat_required": true,
+            "country_code": "DE"
+        },
+        "NL": {
+            "timezone": "Europe/Amsterdam",
+            "utc_offset": "+01:00",
+            "currency": "EUR",
+            "vat_required": true,
+            "vat_code": "NL123456789B01",
+            "country_code": "NL"
+        },
+        "GB": {
+            "timezone": "Europe/London",
+            "utc_offset": "+00:00",
+            "currency": "GBP",
+            "vat_required": true,
+            "country_code": "GB"
+        },
+        "AU": {
+            "timezone": "Australia/Sydney",
+            "utc_offset": "+11:00",
+            "currency": "AUD",
+            "vat_required": false,
+            "country_code": "AU"
+        }
+    },
+    "campaign_defaults": {
+        "objective": "TRAFFIC",
+        "schedule_days_ahead": 7,
+        "budget_type": "DAILY",
+        "bid_strategy": "LOWEST_COST",
+        "destination_url": "https://example.com/404",
+        "placement": "TIKTOK"
+    },
+    "bc_types": {
+        "whitehat": {
+            "description": "404 URL, auto-pause when approved",
+            "url": "https://example.com/404",
+            "schedule_days": 7,
+            "auto_pause": true
+        },
+        "dropship": {
+            "description": "Real store URL, monitor spend",
+            "schedule_days": 1,
+            "auto_pause": false
+        },
+        "cpa": {
+            "description": "Affiliate offer URL",
+            "schedule_days": 3,
+            "auto_pause": false
+        }
+    }
+}

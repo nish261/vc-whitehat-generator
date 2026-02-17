@@ -1,6 +1,7 @@
 """SQLite database helpers for account state tracking"""
 
 import sqlite3
+import csv
 from pathlib import Path
 from typing import Optional, Dict, List
 from datetime import datetime
@@ -9,14 +10,12 @@ DB_PATH = Path(__file__).parent.parent / "accounts.db"
 
 
 def get_connection() -> sqlite3.Connection:
-    """Get database connection with row factory"""
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
 
 def init_db():
-    """Initialize database with schema"""
     conn = get_connection()
     cursor = conn.cursor()
     
@@ -28,12 +27,22 @@ def init_db():
             region TEXT NOT NULL,
             proxy TEXT,
             
-            status TEXT DEFAULT "queued",
+            status TEXT DEFAULT queued,
             current_step TEXT,
             
             bc_id TEXT,
+            bc_type TEXT DEFAULT whitehat,
             campaign_id TEXT,
             campaign_status TEXT,
+            
+            -- Batch settings
+            batch_id TEXT,
+            destination_url TEXT,
+            budget REAL,
+            currency TEXT,
+            timezone TEXT,
+            schedule_start TEXT,
+            auto_pause INTEGER DEFAULT 1,
             
             error_log TEXT,
             attempts INTEGER DEFAULT 0,
@@ -52,57 +61,53 @@ def init_db():
         
         CREATE INDEX IF NOT EXISTS idx_status ON accounts(status);
         CREATE INDEX IF NOT EXISTS idx_campaign_status ON accounts(campaign_status);
+        CREATE INDEX IF NOT EXISTS idx_batch_id ON accounts(batch_id);
     """)
     
     conn.commit()
     conn.close()
-    print(f"[DB] Initialized at {DB_PATH}")
 
 
 def get_next_queued_account() -> Optional[Dict]:
-    """Get next account with status=queued"""
     conn = get_connection()
     cursor = conn.cursor()
-    
     cursor.execute("""
         SELECT * FROM accounts 
-        WHERE status = "queued" 
+        WHERE status = queued 
         ORDER BY created_at ASC 
         LIMIT 1
     """)
-    
     row = cursor.fetchone()
     conn.close()
-    
-    if row:
-        return dict(row)
-    return None
+    return dict(row) if row else None
 
 
 def get_account(account_id: str) -> Optional[Dict]:
-    """Get account by ID"""
     conn = get_connection()
     cursor = conn.cursor()
-    
     cursor.execute("SELECT * FROM accounts WHERE id = ?", (account_id,))
     row = cursor.fetchone()
     conn.close()
-    
-    if row:
-        return dict(row)
-    return None
+    return dict(row) if row else None
 
 
-def add_account(account_id: str, email: str, password: str, region: str, proxy: str = None) -> bool:
-    """Add new account to queue"""
+def add_account(account_id: str, email: str, password: str, region: str, 
+                proxy: str = None, batch_id: str = None, bc_type: str = "whitehat",
+                destination_url: str = None, budget: float = None, 
+                currency: str = None, timezone: str = None,
+                schedule_start: str = None, auto_pause: bool = True) -> bool:
     conn = get_connection()
     cursor = conn.cursor()
     
     try:
         cursor.execute("""
-            INSERT INTO accounts (id, email, password, region, proxy)
-            VALUES (?, ?, ?, ?, ?)
-        """, (account_id, email, password, region, proxy))
+            INSERT INTO accounts (id, email, password, region, proxy, batch_id, 
+                bc_type, destination_url, budget, currency, timezone, 
+                schedule_start, auto_pause)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (account_id, email, password, region, proxy, batch_id,
+              bc_type, destination_url, budget, currency, timezone,
+              schedule_start, 1 if auto_pause else 0))
         conn.commit()
         print(f"[DB] Added account {account_id}")
         return True
@@ -114,7 +119,6 @@ def add_account(account_id: str, email: str, password: str, region: str, proxy: 
 
 
 def update_account(account_id: str, **kwargs) -> bool:
-    """Update account fields"""
     if not kwargs:
         return False
     
@@ -123,48 +127,75 @@ def update_account(account_id: str, **kwargs) -> bool:
     
     fields = list(kwargs.keys()) + ["updated_at"]
     values = list(kwargs.values()) + [datetime.now().isoformat()]
-    
     set_clause = ", ".join([f"{f} = ?" for f in fields])
     
-    cursor.execute(f"""
-        UPDATE accounts SET {set_clause} WHERE id = ?
-    """, values + [account_id])
-    
+    cursor.execute(f"UPDATE accounts SET {set_clause} WHERE id = ?", values + [account_id])
     conn.commit()
     affected = cursor.rowcount
     conn.close()
-    
     return affected > 0
 
 
 def get_pending_campaigns() -> List[Dict]:
-    """Get accounts with pending campaigns to monitor"""
     conn = get_connection()
     cursor = conn.cursor()
-    
     cursor.execute("""
         SELECT * FROM accounts 
         WHERE campaign_id IS NOT NULL 
-        AND campaign_status = "pending"
+        AND campaign_status = pending
+        AND auto_pause = 1
     """)
-    
     rows = cursor.fetchall()
     conn.close()
-    
     return [dict(row) for row in rows]
 
 
 def get_accounts_by_status(status: str) -> List[Dict]:
-    """Get all accounts with given status"""
     conn = get_connection()
     cursor = conn.cursor()
-    
     cursor.execute("SELECT * FROM accounts WHERE status = ?", (status,))
     rows = cursor.fetchall()
     conn.close()
-    
     return [dict(row) for row in rows]
 
 
-# Initialize database on import
+def get_accounts_by_batch(batch_id: str) -> List[Dict]:
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM accounts WHERE batch_id = ?", (batch_id,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [dict(row) for row in rows]
+
+
+def export_to_csv(filepath: str = None) -> str:
+    if not filepath:
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filepath = Path(__file__).parent.parent / f"exports/accounts_{ts}.csv"
+    
+    filepath = Path(filepath)
+    filepath.parent.mkdir(parents=True, exist_ok=True)
+    
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM accounts ORDER BY created_at DESC")
+    rows = cursor.fetchall()
+    conn.close()
+    
+    if not rows:
+        print("[DB] No accounts to export")
+        return ""
+    
+    headers = rows[0].keys()
+    with open(filepath, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=headers)
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(dict(row))
+    
+    print(f"[DB] Exported {len(rows)} accounts to {filepath}")
+    return str(filepath)
+
+
+# Initialize on import
 init_db()
